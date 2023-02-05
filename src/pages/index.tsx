@@ -1,8 +1,8 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import { Inter } from '@next/font/google'
-import styles from '@/styles/Home.module.css'
 import { useEffect, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -110,7 +110,7 @@ export default function Home() {
                 <div key={c.timestamp}>
                   <div className="bg-slate-700 p-2 rounded-lg m-1">
                     <div className="text-gray-200" style={{whiteSpace:'pre-wrap'}}>
-                      {c.input.trim()}
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{c.input.trim()}</ReactMarkdown>
                     </div>
                     <div className="text-gray-400 text-xs">
                     {formatDate(c.timestamp)}
@@ -118,7 +118,7 @@ export default function Home() {
                   </div>
                   <div className="bg-slate-900 p-2 rounded-lg m-1">
                     <div className="text-gray-200" style={{whiteSpace:'pre-wrap'}}>
-                      {c.output.trim()}
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{c.output.trim()}</ReactMarkdown>
                     </div>
                     <div className="text-gray-400 text-xs">
                       {formatDate(c.timestamp)}
