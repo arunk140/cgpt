@@ -1,9 +1,8 @@
 import Head from 'next/head'
-import { Inter } from '@next/font/google'
+
 import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-
 import { PlusCircle } from 'react-feather';
 
 export default function Home() {
@@ -130,9 +129,16 @@ export default function Home() {
                     {formatDate(c.timestamp)}
                     </div>
                   </div>
-                  <div className="bg-slate-900 p-4 rounded-lg m-1">
+                  <div className="bg-slate-800 p-4 rounded-lg m-1">
                     <div className="text-gray-200" style={{whiteSpace:'pre-wrap'}}>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]}>{c.output.trim()}</ReactMarkdown>
+                      <ReactMarkdown components={{
+                        a: ({node, ...props}) => <a className="text-blue-400" {...props} />,
+                        pre: ({node, ...props}) => <pre className="font-mono bg-slate-900 rounded-lg p-2 my-2" {...props} />,
+                        code: ({node, ...props}) => <code className="font-mono italic" {...props} />,
+                        ol: ({node, ...props}) => <ol className="list-disc pl-5" {...props} />
+                      }} remarkPlugins={[remarkGfm]}>
+                        {c.output.trim()}
+                      </ReactMarkdown>
                     </div>
                     <div className="text-gray-400 text-xs">
                       {formatDate(c.timestamp)}
@@ -152,4 +158,3 @@ export default function Home() {
     </>
   )
 }
-
