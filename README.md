@@ -1,3 +1,9 @@
+# cgpt 
+
+## selfhosted chatgpt like service using openai apis (with APIs + Frontend and Session Storage) 
+
+---
+
 ## Getting Started
 
 Update docker-compose.yml/.env file with OPEN AI API Key.
