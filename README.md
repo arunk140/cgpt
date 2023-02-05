@@ -19,6 +19,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Screenshots -
 
-![image](https://user-images.githubusercontent.com/8670239/216829513-b5fc5e17-5d6a-48ec-86ba-7da7dc8c892b.png)
-
-![image](https://user-images.githubusercontent.com/8670239/216829495-5bd38847-5ee0-40a2-a1e2-ff9abce54633.png)
+![image](https://user-images.githubusercontent.com/8670239/216848244-dfba2cb7-2850-43f2-8b67-3e8384955df0.png)
