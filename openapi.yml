@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Chat API
+  version: 1.0.0
+paths:
+  /api/history:
+    get:
+      summary: Fetch a list of sessions
+      description: Returns an array of session objects
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    _id:
+                      type: string
+                      description: Unique identifier for the session
+                    title:
+                      type: string
+                      description: Title of the session
+  /api/history/{id}:
+    get:
+      summary: Fetch conversation history for a particular session
+      description: Returns a session object
+      parameters:
+        - in: path
+          name: id
+          description: Unique identifier for the session
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  history:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        input:
+                          type: string
+                          description: Input text
+                        output:
+                          type: string
+                          description: Output text
+                        timestamp:
+                          type: integer
+                          description: Timestamp of the conversation
+  /api/chat:
+    post:
+      summary: Send a message
+      description: Accepts a message object
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Input message
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: Output response
+                  title:
+                    type: string
+                    description: chat session title
+                  sessionId:
+                    type: string
+                    description: Unique identifier for the session
+  /api/chat/{id}:
+    post:
+      summary: Send a message in an existing session
+      description: Accepts a message object
+      parameters:
+        - in: path
+          name: id
+          description: Unique identifier for the session
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: Input message
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  response:
+                    type: string
+                    description: Output response
