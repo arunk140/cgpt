@@ -4,16 +4,18 @@ import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-const inter = Inter({ subsets: ['latin'] })
+import { PlusCircle } from 'react-feather';
 
 export default function Home() {
+
+  const startNewChatTitle = "Type a Message and Submit to Start a New Conversation";
 
   const [historyListLoaded, setHistoryListLoaded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const [historyList, setHistoryList] = useState([] as any[]);
   const [msg, setMsg] = useState("");
-  const [sessionTitle, setSessionTitle] = useState("New Chat");
+  const [sessionTitle, setSessionTitle] = useState(startNewChatTitle);
 
   const [conversation, setConversation] = useState([] as any[]);
 
@@ -31,7 +33,7 @@ export default function Home() {
     if (id === null) {
       setConversation([]);
       setSessionId(null);
-      setSessionTitle("New Chat");
+      setSessionTitle(startNewChatTitle);
       return;
     }
     setIsLoading(true)
@@ -94,13 +96,20 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="parent bg-slate-600 h-screen grid grid-cols-8">
-        <section className="sidebar bg-slate-800 md:col-span-1 hidden sm:inline-grid">
-          {historyListLoaded ? <div>
+        <section className="sidebar bg-slate-800 md:col-span-1 hidden sm:inline-flex flex-col h-screen">
+          <div className=" text-2xl text-white p-4">
+            {"History"}
+          </div>
+          {historyListLoaded ? <div className='grow overflow-auto'>
             {historyListLoaded && historyList.map((h: {_id: string, title: string}) => {
               return (
                 <div key={h._id}>
+                  {h._id === null ? <hr className='w-[80%] opacity-30 my-5 mx-auto' /> : null}
                   <div className="text-gray-300 cursor-pointer p-3">
-                    <div className={(h._id === sessionId ? "bg-slate-700 rounded-lg" : "") + " w-full p-2"} onClick={()=>{loadHistoryBySessionId(h._id, h.title)}} data-value={h._id} data-title={h.title}>{h._id ? h.title : "New Chat"}</div>
+                    <div className={(h._id === sessionId ? "bg-slate-700 rounded-lg" : "") + " flex p-2"} onClick={()=>{loadHistoryBySessionId(h._id, h.title)}} data-value={h._id} data-title={h.title}>
+                      {h._id === null ? <PlusCircle size={20} className="inline-block mr-2" /> : null}
+                      {h._id ? h.title : "New Conversation"}
+                    </div>
                   </div>
                 </div>
               );
@@ -108,12 +117,12 @@ export default function Home() {
           </div> : <div className="text-gray-200">Loading...</div>}
         </section>
         <main className="main md:col-span-7 col-span-8 container mx-auto flex items-end flex-col h-screen">
-          <h1 className='w-full text-gray-200 float-left text-xl'><span>{sessionTitle}</span></h1>
+          <h1 className='w-full text-gray-200 float-left text-xl p-4'>{sessionTitle}</h1>
           <div className="flex-grow w-full overflow-auto">
             {conversation.map((c: any) => {
               return (
                 <div key={c.timestamp}>
-                  <div className="bg-slate-700 p-2 rounded-lg m-1">
+                  <div className="bg-slate-700 p-4 rounded-lg m-1">
                     <div className="text-gray-200" style={{whiteSpace:'pre-wrap'}}>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{c.input.trim()}</ReactMarkdown>
                     </div>
@@ -121,7 +130,7 @@ export default function Home() {
                     {formatDate(c.timestamp)}
                     </div>
                   </div>
-                  <div className="bg-slate-900 p-2 rounded-lg m-1">
+                  <div className="bg-slate-900 p-4 rounded-lg m-1">
                     <div className="text-gray-200" style={{whiteSpace:'pre-wrap'}}>
                       <ReactMarkdown remarkPlugins={[remarkGfm]}>{c.output.trim()}</ReactMarkdown>
                     </div>
