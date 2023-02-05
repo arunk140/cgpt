@@ -44,6 +44,7 @@ export default function Home() {
   };
 
   const postMessage = async (message: string) => {
+    setIsLoading(true);
     setMsg("");
     var url = sessionId ? '/api/chat/' + sessionId : '/api/chat';
     var msg = await fetch(url, {
@@ -66,7 +67,6 @@ export default function Home() {
 
   const handleKeyUp = (e: any) => {
     if (e.key === 'Enter' && e.shiftKey) {
-      setIsLoading(true);
       postMessage(msg);
     }
   };
@@ -134,7 +134,10 @@ export default function Home() {
             })}
             {isLoading && <div className="text-gray-200">Loading...</div>}
           </div>
-          <textarea value={msg} onChange={(e)=>{setMsg(e.target.value)}} placeholder={"Shift + Enter to Submit, Enter for New Line"} onKeyUp={handleKeyUp} className="h-20 w-full resize-none p-2 rounded-lg mb-1"></textarea>
+          <div className='w-full flex'>
+            <textarea disabled={isLoading} value={msg} onChange={(e)=>{setMsg(e.target.value)}} placeholder={"Shift + Enter to Submit, Enter for New Line"} onKeyUp={handleKeyUp} className="h-20 w-full resize-none p-2 rounded-lg mb-1"></textarea>
+            <button disabled={isLoading} className=' bg-slate-800 rounded-lg p-3 h-20 ml-2 text-gray-300' onClick={()=>postMessage(msg)}>Submit</button>
+          </div>
         </main>
       </div>
     </>
