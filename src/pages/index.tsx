@@ -13,6 +13,7 @@ export default function Home() {
 
   const [historyList, setHistoryList] = useState([] as any[]);
   const [msg, setMsg] = useState("");
+  const [sessionTitle, setSessionTitle] = useState("New Chat");
 
   const [conversation, setConversation] = useState([] as any[]);
 
@@ -25,11 +26,12 @@ export default function Home() {
     setHistoryListLoaded(true);
   };
 
-  const loadHistoryBySessionId = async (id: string) => {
+  const loadHistoryBySessionId = async (id: string, title: string) => {
     if (id === sessionId) return;
     if (id === null) {
       setConversation([]);
       setSessionId(null);
+      setSessionTitle("New Chat");
       return;
     }
     setIsLoading(true)
@@ -38,6 +40,7 @@ export default function Home() {
     setConversation(c.history);
     setIsLoading(false);
     setSessionId(id);
+    setSessionTitle(title);
   };
 
   const postMessage = async (message: string) => {
@@ -51,6 +54,7 @@ export default function Home() {
     if (!sessionId) {
       setHistoryList([{_id: m.sessionId, title: m.title}, ...historyList]);
       setSessionId(m.sessionId);
+      setSessionTitle(m.title);
     }
     setConversation([...conversation, {
       input: message,
@@ -96,7 +100,7 @@ export default function Home() {
               return (
                 <div key={h._id}>
                   <div className="text-gray-300 cursor-pointer p-3">
-                    <div className={(h._id === sessionId ? "bg-slate-700 rounded-lg" : "") + " w-full p-2"} onClick={()=>{loadHistoryBySessionId(h._id)}} data-value={h._id}>{h._id ? h.title : "New Chat"}</div>
+                    <div className={(h._id === sessionId ? "bg-slate-700 rounded-lg" : "") + " w-full p-2"} onClick={()=>{loadHistoryBySessionId(h._id, h.title)}} data-value={h._id} data-title={h.title}>{h._id ? h.title : "New Chat"}</div>
                   </div>
                 </div>
               );
@@ -104,6 +108,7 @@ export default function Home() {
           </div> : <div className="text-gray-200">Loading...</div>}
         </section>
         <main className="main md:col-span-7 col-span-8 container mx-auto flex items-end flex-col h-screen">
+          <h1 className='w-full text-gray-200 float-left text-xl'><span>{sessionTitle}</span></h1>
           <div className="flex-grow w-full overflow-auto">
             {conversation.map((c: any) => {
               return (
