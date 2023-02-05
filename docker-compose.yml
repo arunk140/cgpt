@@ -2,10 +2,22 @@ version: '3'
 services:
   mongo:
     image: mongo
-    ports:
-      - "27017:27017"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=example
     volumes:
       - ./db-data:/data/db
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_USERNAME=root
+      - MONGO_PASSWORD=example
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_DB=cgpt
+      - MONGO_URL=mongodb://root:example@mongo:27017/
+      - OPEN_AI_KEY=sk-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
