@@ -19,7 +19,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 Screenshots -
 
-![image](https://user-images.githubusercontent.com/8670239/216799457-39750d58-303a-4dfa-a0d8-25fb73b4a354.png)
+![image](https://user-images.githubusercontent.com/8670239/216829513-b5fc5e17-5d6a-48ec-86ba-7da7dc8c892b.png)
 
-
-![image](https://user-images.githubusercontent.com/8670239/216799440-4e60943f-9857-4068-8fe9-cab76c7aef2e.png)
+![image](https://user-images.githubusercontent.com/8670239/216829495-5bd38847-5ee0-40a2-a1e2-ff9abce54633.png)
