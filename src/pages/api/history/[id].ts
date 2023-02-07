@@ -5,8 +5,8 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<any>
 ) {
-    const { id } = req.query;
-    const collection = await getDocumentFromCollectionById("chat", id);
+    const { id, userId } = req.query;
+    const collection = await getDocumentFromCollectionById("chat", id, userId);
     if (!collection) {
         return res.status(200).json({
             history: []
@@ -23,7 +23,8 @@ export default async function handler(
 
 export async function getDocumentFromCollectionById(
     collectionName: string,
-    id: any
+    id: any,
+    userId: any
 ) {
     const client = new MongoClient(process.env.MONGO_URL || '');
     try {
@@ -32,7 +33,7 @@ export async function getDocumentFromCollectionById(
         const db = client.db(process.env.MONGO_DB);
         const collection = db.collection(collectionName);
         
-        const query = { _id: ObjectId.createFromHexString(id) };
+        const query = { _id: ObjectId.createFromHexString(id), userId: userId};
         const res = await collection.findOne(query);
         return res;
     } catch (e) {

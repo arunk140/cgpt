@@ -6,6 +6,8 @@ import remarkGfm from 'remark-gfm'
 import { PlusCircle } from 'react-feather';
 
 export default function Home() {
+  const [username, setUsername] = useState(null as null|string);
+  const [usernameFld, setUsernameFld] = useState("");
 
   const startNewChatTitle = "Type a Message and Submit to Start a New Conversation";
 
@@ -20,8 +22,8 @@ export default function Home() {
 
   const [sessionId, setSessionId] = useState(null as null|string);
 
-  const loadHistoryList = async () => {
-    var hs = await fetch('/api/history');
+  const loadHistoryList = async (username: string) => {
+    var hs = await fetch('/api/history?userId=' + username);
     var h = await hs.json();
     setHistoryList([...h, {_id: null}]);
     setHistoryListLoaded(true);
@@ -36,7 +38,7 @@ export default function Home() {
       return;
     }
     setIsLoading(true)
-    var cv = await fetch('/api/history/' + id);
+    var cv = await fetch('/api/history/' + id + '?userId=' + username);
     var c = await cv.json();
     setConversation(c.history);
     setIsLoading(false);
@@ -50,7 +52,7 @@ export default function Home() {
     var url = sessionId ? '/api/chat/' + sessionId : '/api/chat';
     var msg = await fetch(url, {
       method: 'POST',
-      body: JSON.stringify({message: message})
+      body: JSON.stringify({message: message, userId: username})
     });
     var m = await msg.json();
     if (!sessionId) {
@@ -82,10 +84,19 @@ export default function Home() {
   
     return day + '/' + month + '/' + year + ' ' + hour + ':' + minute;
   }
+  
+  function onLogin (e: any) {
+    e.preventDefault();
+    setUsername(usernameFld);
+  }
 
   useEffect(() => {
-    loadHistoryList();
-  }, []);
+    if (username) {
+      loadHistoryList(username);
+      setConversation([]);
+      setSessionId(null);
+    }
+  }, [username]);
   return (
     <>
       <Head>
@@ -94,8 +105,12 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="parent bg-slate-600 h-screen grid grid-cols-8">
+      {username !== null ? <div className="parent bg-slate-600 h-screen grid grid-cols-8">
         <section className="sidebar bg-slate-800 md:col-span-1 hidden sm:inline-flex flex-col h-screen">
+          <div className=" text-sm text-white p-4">
+            {username}
+            <button className="float-right" onClick={()=>{setUsername(null); setUsernameFld("");}}>Logout</button>
+          </div>
           <div className=" text-2xl text-white p-4">
             {"History"}
           </div>
@@ -135,7 +150,16 @@ export default function Home() {
                         a: ({node, ...props}) => <a className="text-blue-400" {...props} />,
                         pre: ({node, ...props}) => <pre className="font-mono bg-slate-900 rounded-lg p-2 my-2" {...props} />,
                         code: ({node, ...props}) => <code className="font-mono italic" {...props} />,
-                        ol: ({node, ...props}) => <ol className="list-disc pl-5" {...props} />
+                        ol: ({node, ...props}) => <ol className="pl-5" {...props} />,
+                        ul: ({node, ...props}) => <ul className="pl-5" {...props} />,
+                        li: ({node, ...props}) => <li className="flex" {...props} />,
+                        h1: ({node, ...props}) => <h1 className="font-bold text-2xl" {...props} />,
+                        h2: ({node, ...props}) => <h2 className="font-bold text-xl" {...props} />,
+                        h3: ({node, ...props}) => <h3 className="font-bold text-lg" {...props} />,
+                        h4: ({node, ...props}) => <h4 className="font-bold text-lg" {...props} />,
+                        h5: ({node, ...props}) => <h5 className="font-bold text-lg" {...props} />,
+                        h6: ({node, ...props}) => <h6 className="font-bold text-lg" {...props} />,
+                        p: ({node, ...props}) => <p {...props} />,
                       }} remarkPlugins={[remarkGfm]}>
                         {c.output.trim()}
                       </ReactMarkdown>
@@ -154,7 +178,19 @@ export default function Home() {
             <button disabled={isLoading} className=' bg-slate-800 rounded-lg p-3 h-20 ml-2 text-gray-300' onClick={()=>postMessage(msg)}>Submit</button>
           </div>
         </main>
-      </div>
+      </div> : <div className="bg-slate-900">
+        <div className="flex items-center justify-center h-screen">
+          <div className="bg-slate-800 p-4 rounded-lg">
+            <div className="text-gray-200 text-2xl mb-4">
+              {"Login"}
+            </div>
+            <div className="text-gray-200">
+              <input value={usernameFld} onChange={(e)=>{setUsernameFld(e.target.value)}} placeholder="Username" className="bg-slate-700 rounded-lg p-2 w-full mb-2" />
+              <button onClick={onLogin} className="bg-slate-700 rounded-lg p-2 w-full">Login</button>
+            </div>
+          </div>
+        </div>
+      </div>}
     </>
   )
 }

@@ -12,9 +12,9 @@ export default async function handler(
             error: "Method not allowed"
         });
     }
-    const { message } = JSON.parse(req.body) as { message: string };
+    const { message, userId } = JSON.parse(req.body) as { message: string, userId: string};
     const { id } = req.query as { id: string};
-    var doc = await getDocumentFromCollectionById("chat", id);
+    var doc = await getDocumentFromCollectionById("chat", id, userId);
     if (!doc) {
         return res.status(404).json({
             error: "No conversation found with id: " + id
@@ -33,14 +33,14 @@ export default async function handler(
         "timestamp": new Date().getTime()
     });
 
-    const done = await updateDocumentInCollection("chat", id, doc.history);
+    const done = await updateDocumentInCollection("chat", id, doc.history, userId);
 
     return res.status(200).json({
         response: op
     });
 }
 
-async function updateDocumentInCollection(collectionName: string, id: string, history: any[]) {
+async function updateDocumentInCollection(collectionName: string, id: string, history: any[], userId: string) {
     const client = new MongoClient(process.env.MONGO_URL || '');
     try {
         await client.connect();
@@ -49,7 +49,8 @@ async function updateDocumentInCollection(collectionName: string, id: string, hi
         const query = { _id: ObjectId.createFromHexString(id) };
         const updateDoc = {
             $set: {
-                history: history
+                history: history,
+                userId: userId
             }
         };
         const result = await collection.updateOne(query, updateDoc);

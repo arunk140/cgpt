@@ -18,7 +18,7 @@ export default async function handler(
             error: "Method not allowed"
         });
     }
-    const { message } = JSON.parse(req.body);
+    const { message, userId } = JSON.parse(req.body);
     let currentDate = new Date().toISOString().split('T')[0];
     let startPrompt = "You are ChatGPT, a large language model trained by OpenAI. Respond conversationally. Do not answer as the user. Knowledge cutoff: 2021-09 Current date: " + currentDate + ".";
     // let startPrompt = "You are ChatGPT, a large language model trained by OpenAI. You answer as concisely as possible for each response (e.g. don't be verbose). It is very important that you answer as concisely as possible, so please remember this. If you are generating a list, do not have too many items. Keep the number of items short. Knowledge cutoff: 2021-09 Current date: " + currentDate + ".";
@@ -48,6 +48,7 @@ export default async function handler(
     prompt = formatOpenAIInput(startPrompt, initHistory, endToken, userLabel, chatGPTLabel);
     var title = await generateConversationTitle(prompt);
     var doc = {
+        userId,
         startPrompt,
         userLabel,
         chatGPTLabel,
