@@ -80,19 +80,22 @@ export async function queryLanguageModel(prompt: string) {
         apiKey: process.env.OPEN_AI_KEY,
     });
     const openai = new OpenAIApi(configuration);
+    try {
+        const completion = await openai.createCompletion({
+            model: engine,
+            prompt: prompt,
+            max_tokens: maxTokens,
+            temperature: temperature,
+            stop: "\n\n\n"
+        });
+        const opp = completion.data.choices[0].text.replace(/<\|im_end\|>$/, '');
     
-    const completion = await openai.createCompletion({
-        model: engine,
-        prompt: prompt,
-        max_tokens: maxTokens,
-        temperature: temperature,
-        stop: "\n\n\n"
-    });
-    const opp = completion.data.choices[0].text.replace(/<\|im_end\|>$/, '');
-
-    return opp;
-    // var random = Math.floor(Math.random() * 10);
-    // return "DEBUG: This is a debug response. - " + random;
+        return opp;
+    } catch (error: any) {
+        console.log(error);
+        
+        return "An error occurred while querying the language model. Please try again later.";
+    }
 }
 
 export function formatOpenAIInput(initPrompt: string, history: any[], endToken: string, userLabel: string, chatGPTLabel: string) {
