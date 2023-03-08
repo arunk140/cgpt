@@ -2,7 +2,11 @@
 
 ## selfhosted chatgpt like service using openai apis (with APIs + Frontend and Session Storage) 
 
----
+### this project uses the official "gpt-3.5-turbo" model API from OpenAI.
+
+
+
+
 
 ## Getting Started
 
