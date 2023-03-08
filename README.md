@@ -5,6 +5,11 @@
 ### this project uses the official "gpt-3.5-turbo" model API from OpenAI.
 
 
+#### tech stack 
+ 
+- Next.js (APIs and Frontend)
+- OpenAI JS Lib (API calls to OpenAI)
+- Mongo DB (Storing Chat History)
 
 
 
